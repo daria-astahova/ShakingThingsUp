@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Board.cs" />
+    <Compile Include="Assets\GameFigures.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

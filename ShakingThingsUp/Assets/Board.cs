@@ -4,38 +4,54 @@ using UnityEngine;
 
 public class Board : MonoBehaviour
 {
-    [Header("References")]
-    public Camera mainCamera;      
-    public GameObject tilePrefab;
+    // --- FIELDS AND PROPERTIES ---
+
+    [Header("Asset References")]
+    [SerializeField] private Camera mainCamera;
+    [SerializeField] private GameObject tilePrefab;
 
     [Header("White Pieces")]
-    public GameObject pawnWhitePrefab;
-    public GameObject rookWhitePrefab;
-    public GameObject knightWhitePrefab;
-    public GameObject bishopWhitePrefab;
-    public GameObject queenWhitePrefab;
-    public GameObject kingWhitePrefab;
+    [SerializeField] private GameObject pawnWhitePrefab;
+    [SerializeField] private GameObject rookWhitePrefab;
+    [SerializeField] private GameObject knightWhitePrefab;
+    [SerializeField] private GameObject bishopWhitePrefab;
+    [SerializeField] private GameObject queenWhitePrefab;
+    [SerializeField] private GameObject kingWhitePrefab;
 
     [Header("Black Pieces")]
-    public GameObject pawnBlackPrefab;
-    public GameObject rookBlackPrefab;
-    public GameObject knightBlackPrefab;
-    public GameObject bishopBlackPrefab;
-    public GameObject queenBlackPrefab;
-    public GameObject kingBlackPrefab;
+    [SerializeField] private GameObject pawnBlackPrefab;
+    [SerializeField] private GameObject rookBlackPrefab;
+    [SerializeField] private GameObject knightBlackPrefab;
+    [SerializeField] private GameObject bishopBlackPrefab;
+    [SerializeField] private GameObject queenBlackPrefab;
+    [SerializeField] private GameObject kingBlackPrefab;
 
-    public static Board instance; // Singleton for easy access
-    private const int BOARD_SIZE = 8;
+    public static Board instance;
+
+    // CHANGED: Replaced single BOARD_SIZE with public width and length
+    public const int BOARD_WIDTH = 5;
+    public const int BOARD_LENGTH = 15;
 
     private GameObject[,] tiles;
     public ChessFigure[,] pieces;
 
-    private int selectionX = -1, selectionY = -1;
+    // Game State
     private ChessFigure selectedPiece;
+    private int selectionX = -1, selectionY = -1;
+    private bool isWhiteTurn = true;
+
+    // --- UNITY LIFECYCLE ---
 
     void Awake()
     {
-        instance = this;
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Start()
@@ -47,156 +63,64 @@ public class Board : MonoBehaviour
     void Update()
     {
         UpdateSelection();
+        HandlePlayerInput();
+    }
 
-        if (Input.GetMouseButtonDown(0))
+    // --- INPUT & SELECTION (No changes needed here) ---
+
+    private void HandlePlayerInput()
+    {
+        if (Input.GetMouseButtonDown(0) && selectionX >= 0 && selectionY >= 0)
         {
-            if (selectionX >= 0 && selectionY >= 0)
+            if (selectedPiece == null)
             {
-                if (selectedPiece == null)
-                {
-                    // Select a piece
-                    if (pieces[selectionX, selectionY] != null)
-                    {
-                        selectedPiece = pieces[selectionX, selectionY];
-                        HighlightTiles(selectedPiece.PossibleMove());
-                    }
-                }
-                else
-                {
-                    // Try to move
-                    bool[,] moves = selectedPiece.PossibleMove();
-                    if (moves[selectionX, selectionY])
-                    {
-                        MovePiece(selectedPiece, selectionX, selectionY);
-                    }
-                    ClearHighlights();
-                    selectedPiece = null;
-                }
+                SelectPiece(selectionX, selectionY);
+            }
+            else
+            {
+                MoveSelectedPiece(selectionX, selectionY);
             }
         }
     }
 
-    // ---------- Board & Pieces ----------
-
-    void GenerateBoard()
+    private void SelectPiece(int x, int y)
     {
-        tiles = new GameObject[BOARD_SIZE, BOARD_SIZE];
-
-        for (int x = 0; x < BOARD_SIZE; x++)
+        if (x < 0 || x >= BOARD_WIDTH || y < 0 || y >= BOARD_LENGTH) return; // Boundary check
+        ChessFigure piece = pieces[x, y];
+        if (piece != null && piece.isWhite == isWhiteTurn)
         {
-            for (int y = 0; y < BOARD_SIZE; y++)
+            selectedPiece = piece;
+            UpdateTileHighlights(selectedPiece.PossibleMove());
+        }
+    }
+
+    private void MoveSelectedPiece(int x, int y)
+    {
+        bool[,] possibleMoves = selectedPiece.PossibleMove();
+        if (possibleMoves[x, y])
+        {
+            if (pieces[x, y] != null)
             {
-                Vector3 position = new Vector3(x, 0, y);
-                GameObject tile = Instantiate(tilePrefab, position, Quaternion.identity, transform);
-
-                Renderer rend = tile.GetComponent<Renderer>();
-                if (rend != null)
-                {
-                    rend.material.color = (x + y) % 2 == 0 ? Color.white : Color.black;
-                }
-
-                tiles[x, y] = tile;
+                Destroy(pieces[x, y].gameObject);
             }
+            pieces[selectedPiece.CurrentX, selectedPiece.CurrentY] = null;
+            pieces[x, y] = selectedPiece;
+            selectedPiece.SetPosition(x, y);
+            selectedPiece.transform.position = new Vector3(x, 0.5f, y);
+            isWhiteTurn = !isWhiteTurn;
         }
+        selectedPiece = null;
+        UpdateTileHighlights();
     }
 
-    void SpawnAllPieces()
-    {
-        pieces = new ChessFigure[BOARD_SIZE, BOARD_SIZE];
-
-        // Pawns
-        for (int x = 0; x < BOARD_SIZE; x++)
-        {
-            SpawnPiece(pawnWhitePrefab, x, 1, true);
-            SpawnPiece(pawnBlackPrefab, x, 6, false);
-        }
-
-        // Rooks
-        SpawnPiece(rookWhitePrefab, 0, 0, true);
-        SpawnPiece(rookWhitePrefab, 7, 0, true);
-        SpawnPiece(rookBlackPrefab, 0, 7, false);
-        SpawnPiece(rookBlackPrefab, 7, 7, false);
-
-        // Knights
-        SpawnPiece(knightWhitePrefab, 1, 0, true);
-        SpawnPiece(knightWhitePrefab, 6, 0, true);
-        SpawnPiece(knightBlackPrefab, 1, 7, false);
-        SpawnPiece(knightBlackPrefab, 6, 7, false);
-
-        // Bishops
-        SpawnPiece(bishopWhitePrefab, 2, 0, true);
-        SpawnPiece(bishopWhitePrefab, 5, 0, true);
-        SpawnPiece(bishopBlackPrefab, 2, 7, false);
-        SpawnPiece(bishopBlackPrefab, 5, 7, false);
-
-        // Queens
-        SpawnPiece(queenWhitePrefab, 3, 0, true);
-        SpawnPiece(queenBlackPrefab, 3, 7, false);
-
-        // Kings
-        SpawnPiece(kingWhitePrefab, 4, 0, true);
-        SpawnPiece(kingBlackPrefab, 4, 7, false);
-    }
-
-    void SpawnPiece(GameObject prefab, int x, int y, bool isWhite)
-    {
-        Vector3 position = new Vector3(x, 0.5f, y);
-        GameObject obj = Instantiate(prefab, position, Quaternion.identity, transform);
-        ChessFigure figure = obj.GetComponent<ChessFigure>();
-        figure.SetPosition(x, y);
-        figure.isWhite = isWhite;
-
-        pieces[x, y] = figure;
-    }
-
-    // ---------- Highlighting ----------
-
-    void HighlightTiles(bool[,] moves)
-    {
-        for (int x = 0; x < BOARD_SIZE; x++)
-        {
-            for (int y = 0; y < BOARD_SIZE; y++)
-            {
-                Renderer rend = tiles[x, y].GetComponent<Renderer>();
-                if (rend != null)
-                {
-                    if (moves[x, y])
-                        rend.material.color = Color.green;
-                    else
-                        rend.material.color = (x + y) % 2 == 0 ? Color.white : Color.black;
-                }
-            }
-        }
-    }
-
-    void ClearHighlights()
-    {
-        for (int x = 0; x < BOARD_SIZE; x++)
-        {
-            for (int y = 0; y < BOARD_SIZE; y++)
-            {
-                Renderer rend = tiles[x, y].GetComponent<Renderer>();
-                if (rend != null)
-                {
-                    rend.material.color = (x + y) % 2 == 0 ? Color.white : Color.black;
-                }
-            }
-        }
-    }
-
-    // ---------- Selection & Movement ----------
-
-    void UpdateSelection()
+    private void UpdateSelection()
     {
         if (!mainCamera) return;
-
         RaycastHit hit;
-        float raycastDistance = 50.0f;
-
-        if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, raycastDistance))
+        if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out hit, 100f))
         {
-            selectionX = Mathf.FloorToInt(hit.point.x);
-            selectionY = Mathf.FloorToInt(hit.point.z);
+            selectionX = Mathf.RoundToInt(hit.point.x);
+            selectionY = Mathf.RoundToInt(hit.point.z);
         }
         else
         {
@@ -205,101 +129,94 @@ public class Board : MonoBehaviour
         }
     }
 
-    void MovePiece(ChessFigure piece, int x, int y)
+    // --- BOARD & PIECE GENERATION ---
+
+    void GenerateBoard()
     {
-        // Capture
-        if (pieces[x, y] != null)
+        // CHANGED: Use new constants for array size
+        tiles = new GameObject[BOARD_WIDTH, BOARD_LENGTH];
+        
+        // CHANGED: Loops now use width and length
+        for (int x = 0; x < BOARD_WIDTH; x++)
         {
-            Destroy(pieces[x, y].gameObject);
+            for (int y = 0; y < BOARD_LENGTH; y++)
+            {
+                Vector3 position = new Vector3(x, 0, y);
+                GameObject tile = Instantiate(tilePrefab, position, Quaternion.identity, transform);
+                tile.name = $"Tile ({x}, {y})";
+                Renderer rend = tile.GetComponent<Renderer>();
+                rend.material.color = (x + y) % 2 == 0 ? Color.white : new Color(0.2f, 0.2f, 0.2f);
+                tiles[x, y] = tile;
+            }
         }
-
-        pieces[piece.CurrentX, piece.CurrentY] = null;
-        piece.SetPosition(x, y);
-        piece.transform.position = new Vector3(x, 0.5f, y);
-        pieces[x, y] = piece;
-    }
-}
-
-// ---------- Base & Example Pieces ----------
-
-public abstract class ChessFigure : MonoBehaviour
-{
-    public int CurrentX { get; set; }
-    public int CurrentY { get; set; }
-    public bool isWhite;
-
-    public void SetPosition(int x, int y)
-    {
-        CurrentX = x;
-        CurrentY = y;
     }
 
-    public virtual bool[,] PossibleMove()
+    // REWRITTEN: The piece layout must be completely changed for the new board size.
+    // This is just an example layout, you can customize it however you want!
+    void SpawnAllPieces()
     {
-        return new bool[8, 8];
+        pieces = new ChessFigure[BOARD_WIDTH, BOARD_LENGTH];
+
+        // --- White Pieces (at the "bottom" of the board) ---
+        // Pawns on the second rank (y=1)
+        for (int x = 0; x < BOARD_WIDTH; x++)
+        {
+            SpawnPiece(pawnWhitePrefab, x, 1);
+        }
+        // Back rank (y=0)
+        SpawnPiece(rookWhitePrefab, 0, 0);
+        SpawnPiece(knightWhitePrefab, 1, 0);
+        SpawnPiece(kingWhitePrefab, 2, 0); // King in the middle of 5 wide
+        SpawnPiece(bishopWhitePrefab, 3, 0);
+        SpawnPiece(rookWhitePrefab, 4, 0);
+        // Add a queen somewhere, for example
+        SpawnPiece(queenWhitePrefab, 2, 2);
+
+
+        // --- Black Pieces (at the "top" of the board) ---
+        // Pawns on the second-to-last rank (y=13)
+        for (int x = 0; x < BOARD_WIDTH; x++)
+        {
+            SpawnPiece(pawnBlackPrefab, x, BOARD_LENGTH - 2);
+        }
+        // Back rank (y=14)
+        SpawnPiece(rookBlackPrefab, 0, BOARD_LENGTH - 1);
+        SpawnPiece(knightBlackPrefab, 1, BOARD_LENGTH - 1);
+        SpawnPiece(kingBlackPrefab, 2, BOARD_LENGTH - 1);
+        SpawnPiece(bishopBlackPrefab, 3, BOARD_LENGTH - 1);
+        SpawnPiece(rookBlackPrefab, 4, BOARD_LENGTH - 1);
+        // Add a queen somewhere
+        SpawnPiece(queenBlackPrefab, 2, BOARD_LENGTH - 3);
     }
-}
 
-public class Rook : ChessFigure
-{
-    public override bool[,] PossibleMove()
+    void SpawnPiece(GameObject prefab, int x, int y)
     {
-        bool[,] moves = new bool[8, 8];
-        int x = CurrentX;
-        int y = CurrentY;
+        Vector3 position = new Vector3(x, 0.5f, y);
+        GameObject obj = Instantiate(prefab, position, Quaternion.identity, transform);
+        ChessFigure figure = obj.GetComponent<ChessFigure>();
+        figure.SetPosition(x, y);
+        pieces[x, y] = figure;
+    }
 
-        // Right
-        for (int i = x + 1; i < 8; i++)
+    // --- UI & HIGHLIGHTING ---
+
+    void UpdateTileHighlights(bool[,] moves = null)
+    {
+        // CHANGED: Loops now use width and length
+        for (int x = 0; x < BOARD_WIDTH; x++)
         {
-            if (Board.instance.pieces[i, y] == null)
-                moves[i, y] = true;
-            else
+            for (int y = 0; y < BOARD_LENGTH; y++)
             {
-                if (Board.instance.pieces[i, y].isWhite != this.isWhite)
-                    moves[i, y] = true;
-                break;
+                Renderer rend = tiles[x, y].GetComponent<Renderer>();
+                if (moves != null && moves[x, y])
+                {
+                    rend.material.color = Color.green;
+                }
+                else
+                {
+                    rend.material.color = (x + y) % 2 == 0 ? Color.white : new Color(0.2f, 0.2f, 0.2f);
+                }
             }
         }
-
-        // Left
-        for (int i = x - 1; i >= 0; i--)
-        {
-            if (Board.instance.pieces[i, y] == null)
-                moves[i, y] = true;
-            else
-            {
-                if (Board.instance.pieces[i, y].isWhite != this.isWhite)
-                    moves[i, y] = true;
-                break;
-            }
-        }
-
-        // Up
-        for (int j = y + 1; j < 8; j++)
-        {
-            if (Board.instance.pieces[x, j] == null)
-                moves[x, j] = true;
-            else
-            {
-                if (Board.instance.pieces[x, j].isWhite != this.isWhite)
-                    moves[x, j] = true;
-                break;
-            }
-        }
-
-        // Down
-        for (int j = y - 1; j >= 0; j--)
-        {
-            if (Board.instance.pieces[x, j] == null)
-                moves[x, j] = true;
-            else
-            {
-                if (Board.instance.pieces[x, j].isWhite != this.isWhite)
-                    moves[x, j] = true;
-                break;
-            }
-        }
-
-        return moves;
     }
 }
