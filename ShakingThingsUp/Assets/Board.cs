@@ -164,11 +164,11 @@ public class Board : MonoBehaviour
             SpawnPiece(pawnWhitePrefab, x, 1);
         }
         // Back rank (y=0)
-        SpawnPiece(rookWhitePrefab, 0, 0);
-        SpawnPiece(knightWhitePrefab, 1, 0);
-        SpawnPiece(kingWhitePrefab, 2, 0); // King in the middle of 5 wide
-        SpawnPiece(bishopWhitePrefab, 3, 0);
-        SpawnPiece(rookWhitePrefab, 4, 0);
+        // SpawnPiece(rookWhitePrefab, 0, 0);
+        // SpawnPiece(knightWhitePrefab, 1, 0);
+        // SpawnPiece(kingWhitePrefab, 2, 0); // King in the middle of 5 wide
+        // SpawnPiece(bishopWhitePrefab, 3, 0);
+        // SpawnPiece(rookWhitePrefab, 4, 0);
         // Add a queen somewhere, for example
         SpawnPiece(queenWhitePrefab, 2, 2);
 
