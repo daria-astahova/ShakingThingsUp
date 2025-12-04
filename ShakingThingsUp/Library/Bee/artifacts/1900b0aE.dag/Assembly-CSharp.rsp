@@ -362,6 +362,7 @@
 "Assets/CoopCameraController.cs"
 "Assets/GameFigures.cs"
 "Assets/PlayerOneController.cs"
+"Assets/PlayerTwoController.cs"
 "Assets/SwitchBoard.cs"
 "Assets/Tile.cs"
 -langversion:9.0
