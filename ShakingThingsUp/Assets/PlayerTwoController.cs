@@ -35,10 +35,10 @@ public class PlayerTwoController : MonoBehaviour
 
     void HandleSelectorMovement()
     {
-        if (Input.GetKeyDown(KeyCode.I)) selY = Mathf.Clamp(selY - 1, 0, 7);
-        if (Input.GetKeyDown(KeyCode.K)) selY = Mathf.Clamp(selY + 1, 0, 7);
-        if (Input.GetKeyDown(KeyCode.J)) selX = Mathf.Clamp(selX - 1, 0, 4);
-        if (Input.GetKeyDown(KeyCode.L)) selX = Mathf.Clamp(selX + 1, 0, 4);
+        if (Input.GetKeyDown(KeyCode.K)) selY = Mathf.Clamp(selY - 1, 0, 7);
+        if (Input.GetKeyDown(KeyCode.I)) selY = Mathf.Clamp(selY + 1, 0, 7);
+        if (Input.GetKeyDown(KeyCode.L)) selX = Mathf.Clamp(selX - 1, 0, 4);
+        if (Input.GetKeyDown(KeyCode.J)) selX = Mathf.Clamp(selX + 1, 0, 4);
 
         Tile t = board.GetTile(selX, selY);
         selector.position = t.WorldPos + Vector3.up * 0.2f;
