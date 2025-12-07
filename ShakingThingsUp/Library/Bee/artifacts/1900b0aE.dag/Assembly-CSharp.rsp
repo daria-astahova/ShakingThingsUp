@@ -356,7 +356,11 @@
 "Assets/BoardManager.cs"
 "Assets/CoopCameraController.cs"
 "Assets/GameFigures.cs"
+<<<<<<< Updated upstream
 "Assets/michaelcode/MenuButtons.cs"
+=======
+"Assets/menus/MenuButtons.cs"
+>>>>>>> Stashed changes
 "Assets/PlayerOneController.cs"
 "Assets/PlayerTwoController.cs"
 "Assets/SwitchBoard.cs"
