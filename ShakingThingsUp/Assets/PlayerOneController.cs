@@ -3,6 +3,8 @@ using UnityEngine;
 public class PlayerOneController : MonoBehaviour
 {
     public BoardManager board;
+    public bool modeChosen = false;
+
 
     [Header("Selector")]
     public Transform selector;
@@ -38,14 +40,23 @@ public class PlayerOneController : MonoBehaviour
 }
 
 
-    void HandleModeInput()
+   void HandleModeInput()
+{
+    if (Input.GetKeyDown(KeyCode.Q))
     {
-        if (Input.GetKeyDown(KeyCode.A))
-            currentMode = Mode.Attack;
-
-        if (Input.GetKeyDown(KeyCode.D))
-            currentMode = Mode.Defend;
+        currentMode = Mode.Attack;
+        modeChosen = true;
+        Debug.Log("P1 chose ATTACK");
     }
+
+    if (Input.GetKeyDown(KeyCode.E))
+    {
+        currentMode = Mode.Defend;
+        modeChosen = true;
+        Debug.Log("P1 chose DEFEND");
+    }
+}
+
 
     void HandleSelectorMovement()
     {

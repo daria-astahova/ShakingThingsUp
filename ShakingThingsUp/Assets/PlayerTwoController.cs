@@ -22,6 +22,8 @@ public bool EnableSelection = false;
 public bool EnableMovement = false;
 
 public System.Action onMoveComplete;
+public bool modeChosen = false;
+
 
 
   void Update()
@@ -35,15 +37,23 @@ public System.Action onMoveComplete;
     if (EnableMovement)
         HandlePickDrop();
 }
-
-    void HandleModeInput()
+void HandleModeInput()
+{
+    if (Input.GetKeyDown(KeyCode.U))
     {
-        if (Input.GetKeyDown(KeyCode.J))
-            currentMode = Mode.Attack;
-
-        if (Input.GetKeyDown(KeyCode.L))
-            currentMode = Mode.Defend;
+        currentMode = Mode.Attack;
+        modeChosen = true;
+        Debug.Log("P2 chose ATTACK");
     }
+
+    if (Input.GetKeyDown(KeyCode.O))
+    {
+        currentMode = Mode.Defend;
+        modeChosen = true;
+        Debug.Log("P2 chose DEFEND");
+    }
+}
+
 
     void HandleSelectorMovement()
     {

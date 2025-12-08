@@ -26,14 +26,14 @@ public class TurnManager : MonoBehaviour
         Instance = this;
     }
 
-  IEnumerator Start()
-{
-    // Wait for BoardManager to finish loading tiles
-    yield return null;
+    IEnumerator Start()
+    {
+        // Wait for BoardManager to finish loading tiles
+        yield return null;
 
-    ai.Initialize(board);
-    StartCoroutine(RoundRoutine());
-}
+        ai.Initialize(board);
+        StartCoroutine(RoundRoutine());
+    }
 
     IEnumerator RoundRoutine()
     {
@@ -68,25 +68,39 @@ public class TurnManager : MonoBehaviour
         roundText.gameObject.SetActive(false);
     }
 
+    // -------------------------
+    // MODE SELECT (NO TIMER)
+    // -------------------------
     IEnumerator DoModeSelect()
     {
         modePanel.SetActive(true);
+
+        // Reset mode flags
+        p1.modeChosen = false;
+        p2.modeChosen = false;
+
         p1.EnableModeInput = true;
         p2.EnableModeInput = true;
 
-        float t = 3f;
-        while (t > 0f)
+        // Optional: clear or label the timer text for this phase
+        timerText.text = "";
+
+        // 🔥 Wait until BOTH have chosen a mode
+        while (!p1.modeChosen || !p2.modeChosen)
         {
-            timerText.text = Mathf.Ceil(t).ToString();
-            t -= Time.deltaTime;
             yield return null;
         }
 
+        // Stop inputs
         p1.EnableModeInput = false;
         p2.EnableModeInput = false;
+
         modePanel.SetActive(false);
     }
 
+    // -------------------------
+    // PIECE SELECT (still timed, tweak if you want)
+    // -------------------------
     IEnumerator DoPieceSelect()
     {
         p1.EnableSelection = true;
@@ -104,19 +118,30 @@ public class TurnManager : MonoBehaviour
         p2.EnableSelection = false;
     }
 
+    // -------------------------
+    // MOVEMENT / POSITIONING
+    // 30s OR both players placed
+    // -------------------------
     IEnumerator DoMovement()
     {
         bool p1Done = false;
         bool p2Done = false;
 
+        // These should be invoked by the players when they finish placing their piece
         p1.onMoveComplete = () => p1Done = true;
         p2.onMoveComplete = () => p2Done = true;
 
         p1.EnableMovement = true;
         p2.EnableMovement = true;
 
-        while (!p1Done || !p2Done)
+        float t = 30f;
+
+        while (t > 0f && (!p1Done || !p2Done))
+        {
+            timerText.text = Mathf.Ceil(t).ToString();
+            t -= Time.deltaTime;
             yield return null;
+        }
 
         p1.EnableMovement = false;
         p2.EnableMovement = false;
@@ -129,6 +154,4 @@ public class TurnManager : MonoBehaviour
 
         yield return new WaitForSeconds(0.35f);
     }
-    
-
 }
