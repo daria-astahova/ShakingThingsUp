@@ -5516,6 +5516,7 @@ GameObject:
   - component: {fileID: 1463623961}
   - component: {fileID: 1463623962}
   - component: {fileID: 1463623963}
+  - component: {fileID: 1463623964}
   m_Layer: 0
   m_Name: BoardManager
   m_TagString: Untagged
@@ -5569,6 +5570,21 @@ MonoBehaviour:
   timerText: {fileID: 1347085762}
   ai: {fileID: 1657881522}
   board: {fileID: 1463623962}
+--- !u!114 &1463623964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1463623960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfe507db06341a8429e9142373263f78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tilesNeededToWin: 10
+  player1WinScene: P1Win
+  player2WinScene: P2Win
 --- !u!1001 &1473308807
 PrefabInstance:
   m_ObjectHideFlags: 0
