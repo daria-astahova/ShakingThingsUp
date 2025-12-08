@@ -52,16 +52,19 @@ public class Tile : MonoBehaviour
         text.text = value.ToString();
         text.color = Color.black;
     }
-
     public void AddInfluence(int amount)
-    {
-        if (hasCharacter) return;
+{
+    if (hasCharacter) return;
 
-        value += amount;
-        if (value > 10) value = 10;
-        if (value < -10) value = -10;
+    value += amount;
 
-        UpdateAppearance();
-        UpdateText();
-    }
+   
+    if (value > 100) value = 100;
+    if (value < -100) value = -100;
+
+    UpdateAppearance();
+    UpdateText();
+}
+
+
 }
