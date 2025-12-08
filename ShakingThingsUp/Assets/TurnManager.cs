@@ -46,12 +46,14 @@ public class TurnManager : MonoBehaviour
             currentPhase = Phase.ModeSelect;
             yield return StartCoroutine(DoModeSelect());
 
+               currentPhase = Phase.AI;
+            yield return StartCoroutine(DoAIPhase());
+
+
             currentPhase = Phase.Movement;
             yield return StartCoroutine(DoMovement());
 
-            // currentPhase = Phase.AI;
-            // yield return StartCoroutine(DoAIPhase());
-
+         
             round++;
         }
     }
@@ -174,11 +176,11 @@ public class TurnManager : MonoBehaviour
         p2.EnableMovement = false;
     }
 
-    // IEnumerator DoAIPhase()
-    // {
-    //     ai.AdvanceLevel(round);
-    //     ai.PerformTurn();
+    IEnumerator DoAIPhase()
+    {
+        ai.AdvanceLevel(round);
+        ai.PerformTurn();
 
-    //     yield return new WaitForSeconds(0.35f);
-    // }
+        yield return new WaitForSeconds(0.35f);
+    }
 }

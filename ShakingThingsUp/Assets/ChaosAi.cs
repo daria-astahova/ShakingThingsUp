@@ -120,7 +120,7 @@ public class ChaosAI : MonoBehaviour
     }
 
     // -----------------------------
-    // Apply influence around current tile
+    // Apply influence around current tile (3x3 chaos zone)
     // -----------------------------
     void ApplyInfluence()
     {
@@ -128,15 +128,18 @@ public class ChaosAI : MonoBehaviour
 
         DominantPlayer leader = GetDominantPlayer();
 
-        Tile up = board.GetTile(currentTile.x, currentTile.y + 1);
-        Tile down = board.GetTile(currentTile.x, currentTile.y - 1);
-        Tile left = board.GetTile(currentTile.x - 1, currentTile.y);
-        Tile right = board.GetTile(currentTile.x + 1, currentTile.y);
+        int cx = currentTile.x;
+        int cy = currentTile.y;
 
-        ApplyTo(up, leader);
-        ApplyTo(down, leader);
-        ApplyTo(left, leader);
-        ApplyTo(right, leader);
+        // 🔥 Loop over a 3×3 square centered on the AI (9 tiles)
+        for (int dx = -1; dx <= 1; dx++)
+        {
+            for (int dy = -1; dy <= 1; dy++)
+            {
+                Tile t = board.GetTile(cx + dx, cy + dy);
+                ApplyTo(t, leader);
+            }
+        }
     }
 
     // -----------------------------

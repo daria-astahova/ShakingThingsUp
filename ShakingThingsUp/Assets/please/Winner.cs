@@ -51,12 +51,12 @@ public class Winner : MonoBehaviour
         if (p1Score >= pointsNeededToWin)
         {
             Debug.Log("Player 1 wins!");
-            SceneManager.LoadScene(player1WinScene);
+            SceneManager.LoadScene(2);
         }
         else if (p2Score >= pointsNeededToWin)
         {
             Debug.Log("Player 2 wins!");
-            SceneManager.LoadScene(player2WinScene);
+            SceneManager.LoadScene(3);
         }
     }
 }
