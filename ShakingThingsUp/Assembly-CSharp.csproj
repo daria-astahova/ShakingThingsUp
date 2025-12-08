@@ -56,10 +56,8 @@
   <ItemGroup>
     <Compile Include="Assets\Tile.cs" />
     <Compile Include="Assets\PlayerTwoController.cs" />
-    <Compile Include="Assets\Board.cs" />
     <Compile Include="Assets\BoardManager.cs" />
     <Compile Include="Assets\SwitchBoard.cs" />
-    <Compile Include="Assets\GameFigures.cs" />
     <Compile Include="Assets\CoopCameraController.cs" />
     <Compile Include="Assets\PlayerOneController.cs" />
   </ItemGroup>

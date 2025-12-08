@@ -22,9 +22,7 @@ public class BoardManager : MonoBehaviour
         Debug.Log("BoardManager loaded tiles successfully.");
     }
 
-    /// <summary>
-    /// Finds all tile objects named A1–E8 and stores them in the 2D array.
-    /// </summary>
+    
     void LoadAllTiles()
     {
         Tile[] allTiles = FindObjectsOfType<Tile>();
@@ -64,9 +62,7 @@ public class BoardManager : MonoBehaviour
         return tiles[x, y];
     }
 
-    /// <summary>
-    /// Returns all tiles within a square radius (Manhattan/chebyshev), excluding center.
-    /// </summary>
+
     public List<Tile> GetNeighborsRadius(int cx, int cy, int radius)
     {
         List<Tile> results = new List<Tile>();
@@ -85,4 +81,5 @@ public class BoardManager : MonoBehaviour
 
         return results;
     }
+
 }
