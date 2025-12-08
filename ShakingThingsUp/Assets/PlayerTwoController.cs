@@ -17,12 +17,24 @@ public class PlayerTwoController : MonoBehaviour
     private enum Mode { Attack, Defend }
     private Mode currentMode = Mode.Defend;
 
-    void Update()
-    {
+    public bool EnableModeInput = false;
+public bool EnableSelection = false;
+public bool EnableMovement = false;
+
+public System.Action onMoveComplete;
+
+
+  void Update()
+{
+    if (EnableModeInput)
         HandleModeInput();
+
+    if (EnableSelection)
         HandleSelectorMovement();
+
+    if (EnableMovement)
         HandlePickDrop();
-    }
+}
 
     void HandleModeInput()
     {
@@ -37,8 +49,8 @@ public class PlayerTwoController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.K)) selY = Mathf.Clamp(selY - 1, 0, 7);
         if (Input.GetKeyDown(KeyCode.I)) selY = Mathf.Clamp(selY + 1, 0, 7);
-        if (Input.GetKeyDown(KeyCode.L)) selX = Mathf.Clamp(selX - 1, 0, 4);
-        if (Input.GetKeyDown(KeyCode.J)) selX = Mathf.Clamp(selX + 1, 0, 4);
+        if (Input.GetKeyDown(KeyCode.L)) selX = Mathf.Clamp(selX - 1, 0, 7);
+        if (Input.GetKeyDown(KeyCode.J)) selX = Mathf.Clamp(selX + 1, 0, 7);
 
         Tile t = board.GetTile(selX, selY);
         selector.position = t.WorldPos + Vector3.up * 0.2f;

@@ -358,11 +358,13 @@
 -analyzer:"C:/Program Files/Unity/Hub/Editor/2022.3.11f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll"
 -analyzer:"C:/Program Files/Unity/Hub/Editor/2022.3.11f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 "Assets/BoardManager.cs"
+"Assets/ChaosAi.cs"
 "Assets/CoopCameraController.cs"
 "Assets/PlayerOneController.cs"
 "Assets/PlayerTwoController.cs"
 "Assets/SwitchBoard.cs"
 "Assets/Tile.cs"
+"Assets/TurnManager.cs"
 -langversion:9.0
 
 /deterministic

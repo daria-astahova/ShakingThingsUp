@@ -18,13 +18,25 @@ public class PlayerOneController : MonoBehaviour
 
     private enum Mode { Attack, Defend }
     private Mode currentMode = Mode.Defend;
+    public bool EnableModeInput = false;
+    public bool EnableSelection = false;
+    public bool EnableMovement = false;
+
+    public System.Action onMoveComplete;
+
 
     void Update()
-    {
+{
+    if (EnableModeInput)
         HandleModeInput();
+
+    if (EnableSelection)
         HandleSelectorMovement();
+
+    if (EnableMovement)
         HandlePickDrop();
-    }
+}
+
 
     void HandleModeInput()
     {
