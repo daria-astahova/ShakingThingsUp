@@ -58,8 +58,8 @@ public class Tile : MonoBehaviour
         if (hasCharacter) return;
 
         value += amount;
-        if (value > 10) value = 10;
-        if (value < -10) value = -10;
+        if (value > 100) value = 1;
+        if (value < -100) value = -1;
 
         UpdateAppearance();
         UpdateText();
