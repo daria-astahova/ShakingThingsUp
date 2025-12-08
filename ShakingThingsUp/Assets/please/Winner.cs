@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class Winner : MonoBehaviour
 {
-    public int tilesNeededToWin = 10;         // Number of tiles required to win
+    public int tilesNeededToWin = 40;         // Number of tiles required to win
     public string player1WinScene = "P1Win";  // Name of Player 1 victory scene
     public string player2WinScene = "P2Win";  // Name of Player 2 victory scene
 
@@ -40,11 +40,11 @@ public class Winner : MonoBehaviour
         // Winner conditions
         if (p1Count >= tilesNeededToWin)
         {
-            SceneManager.LoadScene(player1WinScene);
+            SceneManager.LoadScene(2);
         }
         else if (p2Count >= tilesNeededToWin)
         {
-            SceneManager.LoadScene(player2WinScene);
+             SceneManager.LoadScene(3);
         }
     }
 }

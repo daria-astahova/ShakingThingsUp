@@ -98,9 +98,7 @@ public class TurnManager : MonoBehaviour
         modePanel.SetActive(false);
     }
 
-    // -------------------------
-    // PIECE SELECT (still timed, tweak if you want)
-    // -------------------------
+   
     IEnumerator DoPieceSelect()
     {
         p1.EnableSelection = true;
