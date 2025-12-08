@@ -362,6 +362,8 @@
 "Assets/CoopCameraController.cs"
 "Assets/PlayerOneController.cs"
 "Assets/PlayerTwoController.cs"
+"Assets/please/MenuButtons.cs"
+"Assets/please/Winner.cs"
 "Assets/SwitchBoard.cs"
 "Assets/Tile.cs"
 "Assets/TurnManager.cs"

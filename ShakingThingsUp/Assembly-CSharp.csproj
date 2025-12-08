@@ -60,7 +60,9 @@
     <Compile Include="Assets\PlayerTwoController.cs" />
     <Compile Include="Assets\BoardManager.cs" />
     <Compile Include="Assets\SwitchBoard.cs" />
+    <Compile Include="Assets\please\MenuButtons.cs" />
     <Compile Include="Assets\CoopCameraController.cs" />
+    <Compile Include="Assets\please\Winner.cs" />
     <Compile Include="Assets\PlayerOneController.cs" />
   </ItemGroup>
   <ItemGroup>
